@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ゲスクラブ (Guess Club) Online - 簡易リザルト版</title>
+    <title>ゲスクラブ (Guess Club) Online - ポット賞金システム版</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -60,13 +60,13 @@
     <header class="w-full p-4 md:p-5 glass-panel sticky top-0 z-40 border-b border-purple-500/20 flex justify-between items-center">
         <div class="flex items-center space-x-3 cursor-pointer" onclick="location.reload()">
             <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-pink-500 via-purple-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-purple-500/30 border border-purple-200/30">
-                <span class="text-3xl">🧩</span>
+                <span class="text-3xl">🪙</span>
             </div>
             <div>
                 <h1 class="font-black text-xl md:text-2xl tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-pink-300 via-purple-200 to-indigo-300">
                     ゲスクラブ Online
                 </h1>
-                <p class="text-[10px] md:text-xs text-purple-300/70 font-mono tracking-widest uppercase">Guess Club - Quick Result Edition</p>
+                <p class="text-[10px] md:text-xs text-purple-300/70 font-mono tracking-widest uppercase">Guess Club - Pot Prize Edition</p>
             </div>
         </div>
 
@@ -88,11 +88,11 @@
         <div id="viewLobby" class="space-y-6 max-w-2xl mx-auto w-full">
             <div class="text-center space-y-3 my-2">
                 <div class="inline-block px-4 py-1.5 bg-pink-500/20 text-pink-300 rounded-full text-xs md:text-sm font-bold border border-pink-400/30 shadow-lg backdrop-blur-md">
-                    回答を被らせて賞金を獲得しよう！ 🎯
+                    中央の賞金ポットを奪い合え！ 🪙
                 </div>
-                <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight">空気を読んで被らせろ！</h2>
+                <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight">ポット賞金争奪戦！</h2>
                 <p class="text-purple-200/80 text-xs md:text-sm max-w-lg mx-auto leading-relaxed">
-                    お題に対して全員が6つの答えを書きます。「王道だけど他の人に先に出されない絶妙な答え」を出して一致させましょう！
+                    外れるとポットにコインが溜まり、一致させると溜まった賞金を総取り！空気を読んで絶妙なタイミングで当てましょう。
                 </p>
             </div>
 
@@ -129,7 +129,7 @@
                         </div>
                         <h3 class="font-bold text-lg text-white">部屋に入る (ゲスト)</h3>
                     </div>
-                    <button id="btnJoinRoom" class="w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-600 hover:from-indigo-400 hover:to-purple-500 text-white font-black text-lg py-3.5 rounded-2xl shadow-lg shadow-indigo-500/20 transition transform active:scale-95">
+                    <button id="btnJoinRoom" class="w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-600 hover:from-indigo-400 hover:to-indigo-500 text-white font-black text-lg py-3.5 rounded-2xl shadow-lg shadow-indigo-500/20 transition transform active:scale-95">
                         部屋に参加
                     </button>
                 </div>
@@ -179,13 +179,14 @@
                     <div id="lobbyColorPalette" class="flex flex-wrap gap-2.5 pt-1"></div>
                 </div>
 
-                <!-- Simple Party Rules -->
+                <!-- Rules & Round Info -->
                 <div class="bg-slate-950/60 rounded-2xl p-4 border border-purple-500/20 text-xs md:text-sm text-purple-100 space-y-1.5 leading-relaxed">
-                    <div class="font-bold text-pink-300">【ゲームの流れ】</div>
-                    <div>1. お題に対して**6つの答え**を記入します。</div>
-                    <div>2. 手番プレイヤーが回答を発表！ 画面上に大きく表示されます。</div>
-                    <div>3. 全員で手札を確認！ 同じ回答があればカードをタップ、無ければ「該当なし」を押します。</div>
-                    <div>4. 全員提出で**簡易リザルト（賞金計算）**が表示されテンポよく次へ進みます！</div>
+                    <div class="font-bold text-pink-300">【ゲームのルール ＆ 終了条件】</div>
+                    <div>・**ゲーム終了条件**：ラウンド数制限なし！親が1周するごと（または好きなタイミング）で区切り、何ラウンドでも無限に遊べます。</div>
+                    <div>・**賞金ポット**：中央に常にコイン（ポット）があります。誰も一致させられないとコインがポットに溜まっていきます。</div>
+                    <div>・**ヒット（一致）**：自己申告で誰かと一致したら、**その時点までに中央ポットに溜まっていたコインをすべて総取り**！ (獲得後はポットにコイン1枚を補充)</div>
+                    <div>・**単独回答**：誰とも被らなかったら、罰金として**コイン1枚（-$10）を中央ポットに支払い**ます。</div>
+                    <div>・**ラウンド終了**：誰かが6枚のカードを出し切ったら終了。残った手札1枚につき **-$10 のペナルティ**となります。</div>
                 </div>
 
                 <!-- Player List -->
@@ -211,7 +212,7 @@
         <!-- VIEW 3: GAME PLAYING -->
         <div id="viewGame" class="hidden space-y-5 w-full max-w-4xl mx-auto relative">
             
-            <!-- Game Header Status -->
+            <!-- Game Header Status & Central Pot Display -->
             <div class="glass-panel p-4 rounded-3xl border border-purple-500/20 space-y-3">
                 <div class="flex flex-wrap justify-between items-center gap-3">
                     <div class="flex items-center space-x-3">
@@ -219,8 +220,12 @@
                             ラウンド 1
                         </div>
                     </div>
-                    <div class="text-xs font-bold text-purple-200">
-                        場の合計一致数: <span id="totalMatchesCount" class="text-amber-300 font-mono text-base">0</span> 回
+                    <!-- Central Pot Widget -->
+                    <div class="bg-slate-900/90 border border-amber-400/50 px-4 py-1.5 rounded-2xl flex items-center gap-2 shadow-lg">
+                        <span class="text-xl">🪙</span>
+                        <div class="text-xs font-bold text-purple-200">
+                            中央ポット賞金: <span id="centralPotCount" class="text-amber-300 font-mono text-base font-black">$10</span>
+                        </div>
                     </div>
                 </div>
 
@@ -231,7 +236,7 @@
                 </div>
             </div>
 
-            <!-- TOP BANNER: ANNOUNCED ANSWER BOX (Top Priority View) -->
+            <!-- TOP BANNER: ANNOUNCED ANSWER BOX -->
             <div id="activeAnnounceBox" class="hidden glass-panel rounded-3xl p-5 md:p-6 text-center shadow-2xl border-2 border-amber-400/90 bg-slate-950/95 space-y-2 animate-pop">
                 <div class="flex items-center justify-center gap-2">
                     <span id="announcerNameBadge" class="px-3 py-0.5 bg-pink-500/20 text-pink-300 border border-pink-400/30 rounded-full text-xs font-bold">
@@ -244,7 +249,7 @@
                 </p>
             </div>
 
-            <!-- Topic Banner (Only visible when no card is actively announced) -->
+            <!-- Topic Banner -->
             <div id="topicCard" class="glass-panel rounded-3xl p-5 text-center shadow-2xl border border-purple-500/30 bg-slate-950/80 space-y-2">
                 <span id="topicCategoryBadge" class="inline-block px-3 py-1 bg-purple-500/20 text-purple-300 border border-purple-400/30 rounded-full text-xs font-bold">
                     ジャンル: 未定
@@ -308,7 +313,7 @@
                         <div id="myHandCardsList" class="grid grid-cols-2 sm:grid-cols-3 gap-3"></div>
                     </div>
 
-                    <!-- Self Check Action Controls (When Announce Active) -->
+                    <!-- Self Check Action Controls -->
                     <div id="selfCheckControls" class="hidden space-y-2 pt-2 text-center max-w-md mx-auto">
                         <button id="btnSelfCheckNone" onclick="submitSelfCheck('NONE')" class="w-full bg-slate-800 hover:bg-slate-700 text-rose-300 font-bold text-sm py-3.5 rounded-2xl border border-rose-500/40 shadow transition transform active:scale-95">
                             ✕ 手札に該当なし（一致しない）
@@ -371,17 +376,17 @@
 
     </main>
 
-    <!-- QUICK TURN RESULT MODAL (超簡易リザルト) -->
+    <!-- QUICK TURN RESULT MODAL -->
     <div id="quickResultModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md pointer-events-none">
         <div class="glass-panel max-w-sm w-full rounded-3xl p-6 border-2 border-amber-400 shadow-2xl text-center animate-pop space-y-4 bg-slate-950/90">
-            <div id="quickResultIcon" class="text-5xl">🎉</div>
+            <div id="quickResultIcon" class="text-5xl">🪙</div>
             <div class="space-y-1">
-                <span id="quickResultSubtitle" class="text-xs font-bold text-purple-300">判定結果</span>
-                <h3 id="quickResultTitle" class="text-2xl font-black text-white">1名が一致！</h3>
+                <span id="quickResultSubtitle" class="text-xs font-bold text-purple-300">ポット賞金獲得！</span>
+                <h3 id="quickResultTitle" class="text-2xl font-black text-white">一致成功！</h3>
             </div>
             <div id="quickResultRewardBox" class="bg-slate-900/90 p-3 rounded-2xl border border-amber-400/30">
                 <div class="text-xs text-purple-200" id="quickResultAnnouncerName">-- さん</div>
-                <div class="text-2xl font-mono font-black text-amber-300" id="quickResultAmount">+$20 獲得！</div>
+                <div class="text-2xl font-mono font-black text-amber-300" id="quickResultAmount">+$30 獲得！</div>
             </div>
         </div>
     </div>
@@ -397,19 +402,18 @@
 
     <!-- Footer -->
     <footer class="p-4 text-center text-xs text-purple-300/50 border-t border-purple-500/10">
-        &copy; ゲスクラブ (Guess Club) Online - Party Edition
+        &copy; ゲスクラブ (Guess Club) Online - Pot Prize Edition
     </footer>
 
     <!-- GAME ENGINE & PEERJS SCRIPT -->
     <script>
-        const PREFIX = "guess-club-online-party-v4-";
+        const PREFIX = "guess-club-online-party-v5-";
 
         const PLAYER_COLORS = [
             '#f43f5e', '#3b82f6', '#10b981', '#eab308',
             '#a855f7', '#f97316', '#06b6d4', '#ec4899'
         ];
 
-        // 400 Topic Presets Across 8 Categories
         const PRESET_TOPICS = {
             "定番・パーティー定番": [
                 "おでんの具材といえば？", "無人島に1つだけ持っていくなら？", "目玉焼きにかける調味料は？", "おにぎりの具といえば？",
@@ -546,6 +550,7 @@
             category: "",
             topic: "",
             roundNumber: 1,
+            centralPot: 10, // 中央のポット賞金 ($10単位)
             players: {},
             playerOrder: [],
             currentTurnIndex: 0,
@@ -553,7 +558,7 @@
             handAnswers: {},
             activeAnnounce: null,
             selfCheckResponses: {},
-            lastQuickResult: null, // { announcerName: string, matchCount: number, amount: number, isHit: boolean }
+            lastQuickResult: null,
             totalMatches: 0,
             lastSummary: null,
             logs: []
@@ -561,7 +566,6 @@
 
         let soundEnabled = true;
 
-        // Audio Engine
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
         let audioCtx = null;
 
@@ -658,19 +662,19 @@
             const amount = document.getElementById('quickResultAmount');
 
             if (res.isHit) {
-                icon.innerText = "🎉";
-                title.innerText = `${res.matchCount} 名が一致！`;
+                icon.innerText = "🪙";
+                title.innerText = `一致成功！ポット総取り！`;
                 title.className = "text-2xl font-black text-amber-300";
                 announcerName.innerText = `${res.announcerName} さんの手番`;
                 amount.innerText = `+$${res.amount} 獲得！`;
                 amount.className = "text-2xl font-mono font-black text-emerald-400";
                 playSound('match');
             } else {
-                icon.innerText = "😭";
-                title.innerText = "一致者なし（単独回答）";
+                icon.innerText = "💸";
+                title.innerText = "単独回答（ポットに-$10）";
                 title.className = "text-2xl font-black text-rose-400";
                 announcerName.innerText = `${res.announcerName} さんの手番`;
-                amount.innerText = "-$10 ペナルティ";
+                amount.innerText = "-$10 罰金";
                 amount.className = "text-2xl font-mono font-black text-rose-400";
                 playSound('miss');
             }
@@ -817,7 +821,6 @@
                 const prevQuickResult = roomData.lastQuickResult;
                 roomData = data.roomData;
 
-                // Show Quick Result Modal if new result arrives
                 if (roomData.lastQuickResult && JSON.stringify(roomData.lastQuickResult) !== JSON.stringify(prevQuickResult)) {
                     showQuickResultModal(roomData.lastQuickResult);
                 }
@@ -880,6 +883,7 @@
 
             roomData.category = cat;
             roomData.topic = top;
+            roomData.centralPot = 10; // ラウンド開始時はポットに$10
 
             const playerIds = Object.keys(roomData.players);
             roomData.playerOrder = [...playerIds].sort(() => Math.random() - 0.5);
@@ -933,7 +937,6 @@
             broadcastState();
         }
 
-        // Active Player Announces Answer Card
         window.announceMyCard = function(answerText) {
             playSound('tap');
             if (roomData.status !== 'PLAYING') return;
@@ -958,15 +961,12 @@
                 answerText: answerText
             };
             roomData.selfCheckResponses = {};
-
-            // Announcer auto self-checks
             roomData.selfCheckResponses[playerId] = answerText;
 
             addLog(`📢 ${player.name} が「${answerText}」を発表！ 各自手札を確認してください。`);
             broadcastState();
         }
 
-        // Players Self-Check Input
         window.submitSelfCheck = function(responseValue) {
             playSound('tap');
             if (!roomData.activeAnnounce) return;
@@ -1019,25 +1019,26 @@
             let quickRes = null;
 
             if (matchedPlayers.length > 0) {
-                // MATCH SUCCESS
-                const matchCount = matchedPlayers.length;
-                const rewardAmount = matchCount * 10;
-                announcer.money += rewardAmount;
-                roomData.totalMatches += matchCount;
+                // MATCH SUCCESS -> Award Central Pot to Announcer
+                const prize = roomData.centralPot;
+                announcer.money += prize;
+                roomData.totalMatches += matchedPlayers.length;
+                roomData.centralPot = 10; // Reset pot to $10 base
 
                 const matchedNames = matchedPlayers.map(m => roomData.players[m.id].name).join(', ');
-                addLog(`🎉 【ヒット！】 ${announcer.name} の「${announcedText}」に ${matchedNames} が一致！ (賞金 +$${rewardAmount} 獲得)`);
+                addLog(`🎉 【ヒット！】 ${announcer.name} の「${announcedText}」に ${matchedNames} が一致！ ポット賞金 +$${prize} 獲得！`);
 
                 quickRes = {
                     announcerName: announcer.name,
-                    matchCount: matchCount,
-                    amount: rewardAmount,
+                    matchCount: matchedPlayers.length,
+                    amount: prize,
                     isHit: true
                 };
             } else {
-                // MISS
+                // MISS -> Announcer pays $10 penalty into Central Pot
                 announcer.money -= 10;
-                addLog(`❌ 【単独回答】 ${announcer.name} の「${announcedText}」は誰とも被らず... 罰金 -$10`);
+                roomData.centralPot += 10;
+                addLog(`❌ 【単独回答】 ${announcer.name} の「${announcedText}」は誰とも被らず... 罰金 -$10 (中央ポットに加算)`);
 
                 quickRes = {
                     announcerName: announcer.name,
@@ -1049,7 +1050,6 @@
 
             roomData.lastQuickResult = quickRes;
 
-            // Reset active announce
             roomData.activeAnnounce = null;
             roomData.selfCheckResponses = {};
 
@@ -1068,8 +1068,6 @@
                 finishRound(finishedPlayerId);
             } else {
                 roomData.currentTurnIndex = (roomData.currentTurnIndex + 1) % roomData.playerOrder.length;
-                
-                // Show modal on host too
                 showQuickResultModal(quickRes);
                 broadcastState();
             }
@@ -1079,15 +1077,15 @@
             const finishedPlayer = roomData.players[finishedPlayerId];
             
             if (finishedPlayer) {
-                finishedPlayer.money += 50;
+                finishedPlayer.money += 30; // 完走ボーナス
             }
 
-            addLog(`🏁 ${finishedPlayer ? finishedPlayer.name : ''} が手札を使い切り完走！ (完走ボーナス +$50)`);
+            addLog(`🏁 ${finishedPlayer ? finishedPlayer.name : ''} が手札を使い切り完走！ (完走ボーナス +$30)`);
 
             const penalties = {};
             Object.entries(roomData.handAnswers).forEach(([pId, hand]) => {
                 const count = hand.length;
-                const penaltyAmount = count * 20;
+                const penaltyAmount = count * 10; // 手札残り1枚につき-$10ペナルティ
                 if (roomData.players[pId]) {
                     roomData.players[pId].money -= penaltyAmount;
                 }
@@ -1175,7 +1173,9 @@
                 });
             }
 
-            // Header Scores
+            // Header Scores & Central Pot
+            document.getElementById('centralPotCount').innerText = `$${roomData.centralPot || 10}`;
+
             const scoreListEl = document.getElementById('headerScoreList');
             if (scoreListEl) {
                 scoreListEl.innerHTML = '';
@@ -1388,7 +1388,7 @@
                                 <div class="flex items-center space-x-2">
                                     <span class="w-2.5 h-2.5 rounded-full" style="background-color:${p.color}"></span>
                                     <span class="font-bold text-white">${escapeHtml(p.name)}</span>
-                                    ${pen.isFinished ? '<span class="text-[10px] font-bold bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full border border-amber-400/30">完走ボーナス +$50</span>' : ''}
+                                    ${pen.isFinished ? '<span class="text-[10px] font-bold bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full border border-amber-400/30">完走ボーナス +$30</span>' : ''}
                                 </div>
                                 <div class="text-right">
                                     <span class="text-purple-300 font-medium">残り ${pen.remainingCount} 枚</span>
