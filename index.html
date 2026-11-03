@@ -264,19 +264,8 @@
                     <p class="text-xs text-purple-200/80">「みんなが選びそうな答え」を推測して記入しましょう！</p>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl mx-auto">
-                    <!-- 6 Answer Inputs -->
-                    <script>
-                        for(let i=0; i<6; i++){
-                            document.write(`
-                                <div class="flex items-center space-x-2 bg-slate-950/80 p-2.5 rounded-2xl border border-purple-500/30">
-                                    <span class="text-xs font-black text-pink-400 w-5 text-center">${i+1}</span>
-                                    <input type="text" id="answerInput_${i}" maxlength="20" placeholder="回答 ${i+1}" 
-                                        class="w-full bg-transparent text-sm font-bold text-white focus:outline-none placeholder-slate-600">
-                                </div>
-                            `);
-                        }
-                    </script>
+                <div id="answerInputsContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl mx-auto">
+                    <!-- Dynamic 6 Answer Inputs -->
                 </div>
 
                 <div class="max-w-md mx-auto pt-2 text-center">
@@ -407,7 +396,7 @@
 
     <!-- GAME ENGINE & PEERJS SCRIPT -->
     <script>
-        const PREFIX = "guess-club-online-party-v5-";
+        const PREFIX = "guess-club-online-party-v6-";
 
         const PLAYER_COLORS = [
             '#f43f5e', '#3b82f6', '#10b981', '#eab308',
@@ -440,7 +429,7 @@
                 "好きなサーティワンのフレーバーは？", "好きなマクドナルドのメニューは？", "好きなミスタードーナツのメニューは？", "好きなサイゼリヤのメニューは？",
                 "好きなモスバーガーのメニューは？", "好きな丸亀製麺のメニュー・トッピングは？", "好きなカレーのトッピングは？", "好きな食パンのトッピングは？",
                 "好きな豆腐の食べ方は？", "好きな卵料理は？", "好きな食感（擬音）といえば？", "好きなお餅の食べ方は？",
-                "好きなちくわ・練り物の食べ方は？", "好きなきのこの種類は？", "好きなナッツの種類は？", "好きなスパイス・調味料は？",
+                "好きなちくわ・練り物の食べ方は？", "好きなきのこの一種は？", "好きなナッツの種類は？", "好きなスパイス・調味料は？",
                 "好きな柑橘類といえば？", "好きな貝類といえば？", "好きな甲殻類（エビ・カニ等）料理は？", "好きなご当地ラーメンといえば？",
                 "好きなファストフードチェーンは？", "好きなファミレスチェーンは？", "好きなコーヒーチェーンは？", "好きな牛丼チェーンは？",
                 "好きなアイスの銘柄は？", "好きなスナック菓子の銘柄は？"
@@ -457,7 +446,7 @@
                 "モチベーションが上がる瞬間は？", "一人暮らしを始めて最初に買ったものは？", "休日の朝にしたいことは？", "テンションが上がる音といえば？",
                 "落ち着く匂い・香りといえば？", "長風呂のときに持ち込むものは？", "旅行に必ず持っていく便利グッズは？", "手帳やカレンダーに書く予定といえば？",
                 "財布の中に入っているもの（お金以外）は？", "洗面台に置いてあるものは？", "デスクの上にあるものは？", "クローゼットの中にある服の種類は？",
-                "靴箱にある靴の種類は？", "ベランダに置いてあるものは？", "ゴミ出しで忘れがちなゴミの種類は？", "家の鍵につけているものは？",
+                "靴箱にある靴の種類は？", "ベランダに置いてあるものは？", "ゴミ出しで忘れ가ちなゴミの種類は？", "家の鍵につけているものは？",
                 "毎日の習慣といえば？", "人生で大事にしたい時間といえば？"
             ],
             "旅行・おでかけ": [
@@ -542,7 +531,6 @@
         let connections = {};
         let hostConn = null;
 
-        // Shared Game State
         let roomData = {
             hostId: "",
             status: 'LOBBY',
@@ -550,7 +538,7 @@
             category: "",
             topic: "",
             roundNumber: 1,
-            centralPot: 10, // 中央のポット賞金 ($10単位)
+            centralPot: 10,
             players: {},
             playerOrder: [],
             currentTurnIndex: 0,
@@ -831,8 +819,6 @@
             }
         }
 
-        // --- COLOR SELECTION LOGIC ---
-
         window.selectMyColor = function(hexColor) {
             playSound('tap');
             if (isHost) {
@@ -851,8 +837,6 @@
                 broadcastState();
             }
         }
-
-        // --- GAME ENGINE (HOST) ---
 
         window.startGame = function() {
             playSound('tap');
@@ -883,7 +867,7 @@
 
             roomData.category = cat;
             roomData.topic = top;
-            roomData.centralPot = 10; // ラウンド開始時はポットに$10
+            roomData.centralPot = 10;
 
             const playerIds = Object.keys(roomData.players);
             roomData.playerOrder = [...playerIds].sort(() => Math.random() - 0.5);
@@ -905,7 +889,8 @@
             playSound('tap');
             const answers = [];
             for (let i = 0; i < 6; i++) {
-                const val = document.getElementById(`answerInput_${i}`).value.trim();
+                const el = document.getElementById(`answerInput_${i}`);
+                const val = el ? el.value.trim() : '';
                 if (!val) {
                     alert(`回答 ${i+1} を入力してください`);
                     return;
@@ -999,12 +984,10 @@
             const announcer = roomData.players[announcerId];
             const announcedText = announce.answerText;
 
-            // Remove announced card from Announcer's hand
             const aHand = roomData.handAnswers[announcerId] || [];
             const aIdx = aHand.indexOf(announcedText);
             if (aIdx !== -1) aHand.splice(aIdx, 1);
 
-            // Collect matched players
             const matchedPlayers = [];
             Object.entries(roomData.selfCheckResponses).forEach(([pId, val]) => {
                 if (pId === announcerId) return;
@@ -1019,11 +1002,10 @@
             let quickRes = null;
 
             if (matchedPlayers.length > 0) {
-                // MATCH SUCCESS -> Award Central Pot to Announcer
                 const prize = roomData.centralPot;
                 announcer.money += prize;
                 roomData.totalMatches += matchedPlayers.length;
-                roomData.centralPot = 10; // Reset pot to $10 base
+                roomData.centralPot = 10;
 
                 const matchedNames = matchedPlayers.map(m => roomData.players[m.id].name).join(', ');
                 addLog(`🎉 【ヒット！】 ${announcer.name} の「${announcedText}」に ${matchedNames} が一致！ ポット賞金 +$${prize} 獲得！`);
@@ -1035,7 +1017,6 @@
                     isHit: true
                 };
             } else {
-                // MISS -> Announcer pays $10 penalty into Central Pot
                 announcer.money -= 10;
                 roomData.centralPot += 10;
                 addLog(`❌ 【単独回答】 ${announcer.name} の「${announcedText}」は誰とも被らず... 罰金 -$10 (中央ポットに加算)`);
@@ -1049,11 +1030,9 @@
             }
 
             roomData.lastQuickResult = quickRes;
-
             roomData.activeAnnounce = null;
             roomData.selfCheckResponses = {};
 
-            // Check Finish
             let roundFinished = false;
             let finishedPlayerId = "";
 
@@ -1077,7 +1056,7 @@
             const finishedPlayer = roomData.players[finishedPlayerId];
             
             if (finishedPlayer) {
-                finishedPlayer.money += 30; // 完走ボーナス
+                finishedPlayer.money += 30;
             }
 
             addLog(`🏁 ${finishedPlayer ? finishedPlayer.name : ''} が手札を使い切り完走！ (完走ボーナス +$30)`);
@@ -1085,7 +1064,7 @@
             const penalties = {};
             Object.entries(roomData.handAnswers).forEach(([pId, hand]) => {
                 const count = hand.length;
-                const penaltyAmount = count * 10; // 手札残り1枚につき-$10ペナルティ
+                const penaltyAmount = count * 10;
                 if (roomData.players[pId]) {
                     roomData.players[pId].money -= penaltyAmount;
                 }
@@ -1125,6 +1104,25 @@
             if (genreSelect) roomData.selectedGenre = genreSelect.value;
             broadcastState();
         };
+
+        // Render Answer Inputs dynamically to prevent any static missing HTML issues
+        function renderAnswerInputs() {
+            const container = document.getElementById('answerInputsContainer');
+            if (!container) return;
+            if (container.children.length === 6) return; // already rendered
+
+            container.innerHTML = '';
+            for (let i = 0; i < 6; i++) {
+                const div = document.createElement('div');
+                div.className = "flex items-center space-x-2 bg-slate-950/80 p-2.5 rounded-2xl border border-purple-500/30";
+                div.innerHTML = `
+                    <span class="text-xs font-black text-pink-400 w-5 text-center">${i+1}</span>
+                    <input type="text" id="answerInput_${i}" maxlength="20" placeholder="回答 ${i+1}" 
+                        class="w-full bg-transparent text-sm font-bold text-white focus:outline-none placeholder-slate-600">
+                `;
+                container.appendChild(div);
+            }
+        }
 
         // --- RENDER ENGINE ---
 
@@ -1173,7 +1171,6 @@
                 });
             }
 
-            // Header Scores & Central Pot
             document.getElementById('centralPotCount').innerText = `$${roomData.centralPot || 10}`;
 
             const scoreListEl = document.getElementById('headerScoreList');
@@ -1247,6 +1244,7 @@
 
                 if (roomData.status === 'INPUT_ANSWERS') {
                     subInput.classList.remove('hidden');
+                    renderAnswerInputs();
 
                     const hasSubmitted = !!roomData.submittedAnswers[myId];
                     const btnSubmit = document.getElementById('btnSubmitAnswers');
@@ -1316,7 +1314,6 @@
                         }
                     }
 
-                    // My Hand Cards Render
                     const myHandList = document.getElementById('myHandCardsList');
                     myHandList.innerHTML = '';
 
@@ -1344,7 +1341,6 @@
                         myHandList.appendChild(btn);
                     });
 
-                    // Other Players Hand Remaining Status
                     const playersHandStatusList = document.getElementById('playersHandStatusList');
                     playersHandStatusList.innerHTML = '';
 
